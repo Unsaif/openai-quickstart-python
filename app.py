@@ -10,10 +10,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 @app.route("/", methods=("GET", "POST"))
 def index():
     if request.method == "POST":
-        animal = request.form["animal"]
+        topic = request.form["topic"]
         response = openai.Completion.create(
             engine="text-davinci-001",
-            prompt=generate_prompt(animal),
+            prompt=generate_prompt(topic),
             temperature=0.6,
         )
         return redirect(url_for("index", result=response.choices[0].text))
@@ -22,14 +22,14 @@ def index():
     return render_template("index.html", result=result)
 
 
-def generate_prompt(animal):
-    return """Suggest three names for an animal that is a superhero.
+def generate_prompt(topic):
+    return """Tell an inappropriate joke about the given topic.
 
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: {}
-Names:""".format(
-        animal.capitalize()
+Topic: Sex
+Joke: Having sex in an elevator is wrong. On so many levels.
+Topic: Pregnancy
+Joke: What's the difference between a pregnant woman and a lightbulb? You can unscrew a lightbulb.
+Topic: {}
+Joke:""".format(
+        topic.capitalize()
     )
